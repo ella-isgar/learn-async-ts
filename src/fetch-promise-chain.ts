@@ -8,8 +8,8 @@ interface Product {
 
 // Call to fetch() returns a promise
 const fetchPromise4 = fetch(
-    "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
-  );
+  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json"
+);
 
 /**
  * The promise is resolved when the response is received
@@ -18,13 +18,17 @@ const fetchPromise4 = fetch(
  * The resolved promise is handled by logging the product names
  * This is an illustration of refactoring callback hell by chaining promises
  */
-  fetchPromise4
-    .then((response: Response) => response.json() as Promise<Product[]>)
-    .then((products: Product[]) => {
-        products.forEach((product: Product) => {
-            console.log(product.name);
-          });
+fetchPromise4
+  .then((response: Response) => response.json() as Promise<Product[]>)
+  .then((products: Product[]) => {
+    products.forEach((product: Product) => {
+      console.log(product.name);
     });
+  });
 
-    console.log('Chaining promises ... ');
-  
+console.log("Chaining promises ... ");
+
+// In line arrow functions ALWAYS return something
+// PROMISE CHAINING
+//      - Chaining .then() calls creates ***dependencies***!
+//      - A clean chain of then() blcoks as apposed to a nested mess of then() blocks.
