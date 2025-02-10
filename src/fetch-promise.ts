@@ -27,8 +27,7 @@ fetchPromise1.then((response: Response) => {
 // sequential execution; starts right after fetch() is called
 console.log("Started request…");
 for (let i = 0; i < 100; i++) {
-  // console.log("do other things ...");
-  console.log(fetchPromise1);
+  console.log("do other things ...");
 }
 
 console.log("End of script");

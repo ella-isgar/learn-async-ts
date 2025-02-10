@@ -10,7 +10,7 @@ interface Product {
 which is resolved when the response is received
 **/
 const fetchPromise2: Promise<Response> = fetch(
-  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json"
 );
 
 /**
@@ -22,12 +22,16 @@ const fetchPromise2: Promise<Response> = fetch(
  */
 fetchPromise2.then((response: Response) => {
   const jsonPromise = response.json() as Promise<Product[]>;
+
+  // this line is going to execute asynchronously
   jsonPromise.then((products: Product[]) => {
     products.forEach((product: Product) => {
       console.log(product.name);
     });
   });
+
+  // CODE SMELL = nested then() calls
 });
 
 // Logging a message to indicate fetching has started
-console.log('Fetching products ... ');
+console.log("Fetching products ... ");
