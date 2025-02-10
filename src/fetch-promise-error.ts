@@ -33,6 +33,6 @@ fetchPromise3
   })
   .catch((error) => {
     console.error(`Failed to get products: ${error}`);
-  });
+  }); // only need one catch for the entire chain of then() blocks!
 
 console.log("Chaining promises ... ");
