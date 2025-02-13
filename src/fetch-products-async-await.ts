@@ -1,3 +1,4 @@
+// keyword async before a function means that the function will return a Promise
 async function fetchProducts(): Promise<string> {
   console.log("Begin fetch ... ");
   try {
@@ -18,6 +19,7 @@ async function fetchProducts(): Promise<string> {
   }
 }
 
+// keyword async before a function means that the function will return a Promise
 async function main(): Promise<void> {
   console.log("Begin main ... ");
   try {
