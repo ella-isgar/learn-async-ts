@@ -31,4 +31,4 @@ console.log("Chaining promises ... ");
 // In line arrow functions ALWAYS return something
 // PROMISE CHAINING
 //      - Chaining .then() calls creates ***dependencies***!
-//      - A clean chain of then() blcoks as apposed to a nested mess of then() blocks.
+//      - A clean chain of then() blocks as apposed to a nested mess of then() blocks.
