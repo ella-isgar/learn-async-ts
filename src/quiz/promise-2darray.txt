@@ -1,4 +1,109 @@
-- Extract the code in the setTimeout function and replace the setTimeout function  with the extracted code. Then run the main script. 
-- Is there a difference in the flow of execution from when the code was in the setTimeout function?
-- Is the flow of execution in both these examples different from the flow of execution with the examples using the fetch() API, which also returns a promise? 
-- If yes, explain the code execution difference. Add your explanation to this file.
+- Extract the code in the setTimeout function and replace the setTimeout function 
+with the extracted code. Then run the main script.
+
+- Is there a difference in the flow of execution from when the code was in the 
+setTimeout function?
+
+Yes.
+
+When the summing/resolve(sum) logic was inside setTimeout(), the logic was made
+asynchronous aka to be executed in the next event loop cycle. All other 
+synchronous operations happen before the summation for both sumPromise1 and 
+sumPromise2. In the first event loop cycle, sumPromise1 is promised a number from
+sum2DArray(array2D). Within this first run through of sum2DArray()'s call, "Sum
+called ..." is logged. The conditional is not met and is skipped. Then, 
+setTimeout() schedules is contents for execution in the next event loop cycle.
+Then, "returning from sum" is logged. sumPromise2 is promised a number from
+sum2DArray([]). Within this second run through of sum2DArray()'s call,
+sum2DArray, "Sum called ..." is logged. The conditional is met as the given
+array is empty. The Promise made is set to rejected so sumPromise2's catch()
+runs, logging "sp2: Cannot sum an empty array". "End of script." is logged and
+the first event loop cycle has ended. The second event loop cycle begins and
+within setTimeout(), the summing logic is executed, logging all "Adding _ to sum"
+statements. Afterwards, the Promise is resolved to the number, sum. Since the
+Promise made is set to resolved, sumPromise2's then() is run, logging the sum:
+"sp1: 45".
+
+Output WITH setTimeout():
+Sum called ... 
+returning from sum
+Sum called ... 
+returning from sum
+End of script.
+sp2: Cannot sum an empty array
+Adding 1 to sum
+Adding 2 to sum
+Adding 3 to sum
+Adding 4 to sum
+Adding 5 to sum
+Adding 6 to sum
+Adding 7 to sum
+Adding 8 to sum
+Adding 9 to sum
+sp1: 45
+
+When setTimeout() was removed and the summing/resolve(sum) logic placed directly
+into the Promise's logic, the summation logic was made synchronous aka to be 
+executed in the current event loop cycle. In this first event loop cycle, 
+sumPromise1 is promised a number from sum2DArray(array2D). Within this first run
+through of sum2DArray()'s call, "Sum called ..." is logged. The conditional is 
+not met and is skipped. Then, the summation logic is executed, logging every 
+"Adding _ to sum". Then, the Promise is resolved to the calculated sum and 
+sumPromise1 is set to the calculated sum value. Then, "returning from sum" is 
+logged. sumPromise2 is promised a number from sum2DArray([]). Within this second 
+run through of sum2DArray(), "Sum called ..." is logged. The conditional is met 
+as the given array is empty. The Promise made is set to rejected. Then, 
+"returning from sum" is logged. "End of script." is logged and the first event 
+loop cycle has ended. The second event loop cycle begins. The initial Promise of 
+sumPromise1 has already been resolved, so the resolved handler is called with the
+fullfilled value, aka the sum: "sp1: 45" is logged. The initial Promise of 
+sumPromise2 has already been rejected, so the rejected handler is called with the
+rejected value, aka logging "sp2: Cannot sum an empty array".
+
+Output WITHOUT setTimeout():
+Sum called ... 
+Adding 1 to sum
+Adding 2 to sum
+Adding 3 to sum
+Adding 4 to sum
+Adding 5 to sum
+Adding 6 to sum
+Adding 7 to sum
+Adding 8 to sum
+Adding 9 to sum
+returning from sum
+Sum called ... 
+returning from sum
+End of script.
+sp1: 45
+sp2: Cannot sum an empty array
+
+- Is the flow of execution in both these examples different from the flow of 
+execution with the examples using the fetch() API, which also returns a promise?
+
+Yes (see explanation below).
+
+- If yes, explain the code execution difference. Add your explanation to this 
+file.
+
+The flow of execution above is different from when using the fetch() API. The
+fetch() function starts an asynchronous HTTP request and instead of scheduling
+execution of its logic for the next event loop cycle (like setTimeout()), the
+lgoic is made dependent to the HTTP response and the queue of tasks before it.
+
+When called, fetch() immediately returns a Promise while the HTTP request is sent
+asynchronously. Synchronous logic continues to be executed. Only when the HTTP
+response is received does the Promise get resolved/rejected and the proceding 
+chain of .then() callbacks is executed.
+
+When called, the sum2DArray function with setTimeout() executes the summation
+logic asynchronously and the Promise constructor returns an initial Promise that
+needs to be resolved/rejected. Each Promise's resolution happens in the next event
+loop cycle. The chain of .then() callbacks is executed next. The asynchronous
+summation logic is executed last as the setTimeout() further pushed the
+summation logic to the next event loop cycle.
+
+When called, the sum2DArray function without setTimeout() executes the summation
+logic synchronously within the Promise constructor before returning. The only 
+asynchronous component is the Promise's resolution. This means the chain of
+.then() callbacks is executed in the next event loop cycle. 
